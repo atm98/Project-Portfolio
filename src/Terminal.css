@@ -1,0 +1,299 @@
+.terminal {
+    background-color: black;
+    color: #00ff00;
+    font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    white-space: pre;
+    padding-right: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+    width: 100%;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 2.5px solid grey;
+    border-radius: 0 0 12px 12px;
+}
+
+
+.history {
+    width: 100%;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word; /* Ensure proper wrapping */
+    flex-grow: 0;
+}
+
+.terminal-line {
+    margin: 2px 0;
+    white-space: pre-wrap;  /* Ensure text wraps */
+    word-wrap: break-word;  /* Break words if needed */
+    overflow-wrap: break-word; /* Additional safeguard for long words */
+    width: 100%;  /* Ensure it doesn't exceed the terminal width */
+}
+
+.terminal-line .download-progress {
+    display: inline-block;
+    width: 100%;
+    height: 2px;
+    background-color: #1a1a1a;
+    margin: 5px 0;
+    position: relative;
+}
+
+.terminal-line .download-progress::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background-color: #00ff00;
+    transition: width 0.3s ease;
+}
+
+.terminal-line .download-status {
+    display: inline-block;
+    margin-left: 5px;
+    color: #00ff00;
+}
+
+.terminal-line .download-complete {
+    color: #00ff00;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.input-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.prompt {
+    color: #00ff00;
+    margin-right: 5px;
+}
+
+.input-wrapper input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: inherit;
+    font-family: 'Fira Code', monospace;
+    font-size: inherit;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* Handle autofill state */
+.input-wrapper input:-webkit-autofill,
+.input-wrapper input:-webkit-autofill:hover,
+.input-wrapper input:-webkit-autofill:focus,
+.input-wrapper input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+    -webkit-text-fill-color: #00ff00 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* For Firefox */
+.input-wrapper input:-moz-autofill {
+    background-color: transparent !important;
+    color: #00ff00 !important;
+}
+
+/* Ensure scrolling works properly */
+.terminal::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal::-webkit-scrollbar-thumb {
+    background: #00ff00;
+    border-radius: 4px;
+}
+
+.terminal::-webkit-scrollbar-track {
+    background: black;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .terminal {
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    .terminal-line {
+        font-size: 12px;
+        line-height: 1.3;
+        margin: 1px 0;
+    }
+
+    .ascii-art {
+        font-size: 8px !important;
+        line-height: 1.2;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 100%;
+    }
+
+    .input-form {
+        font-size: 12px;
+    }
+
+    .prompt {
+        font-size: 12px;
+    }
+
+    input {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .terminal {
+        font-size: 10px;
+        padding: 3px;
+    }
+
+    .terminal-line {
+        font-size: 10px;
+        line-height: 1.2;
+    }
+
+    .ascii-art {
+        font-size: 6px !important;
+        line-height: 1.1;
+    }
+
+    .input-form {
+        font-size: 10px;
+    }
+
+    .prompt {
+        font-size: 10px;
+    }
+
+    input {
+        font-size: 10px;
+    }
+}
+
+/* Handle very small screens */
+@media (max-width: 320px) {
+    .terminal {
+        font-size: 8px;
+    }
+
+    .terminal-line {
+        font-size: 8px;
+    }
+
+    .ascii-art {
+        font-size: 5px !important;
+    }
+
+    .input-form {
+        font-size: 8px;
+    }
+
+    .prompt {
+        font-size: 8px;
+    }
+
+    input {
+        font-size: 8px;
+    }
+}
+
+.terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px 6px 0 0;
+    font-size: 14px;
+    user-select: none;
+}
+
+.terminal-title {
+    font-weight: 500;
+}
+
+.terminal-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.control {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Windows-specific styles */
+.terminal-header.windows {
+    background-color: #0078D4;
+    color: #ffffff;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.terminal-header.windows .control.close { background-color: #FF0000; }
+.terminal-header.windows .control.minimize { background-color: #FFA500; }
+.terminal-header.windows .control.maximize { background-color: #00FF00; }
+
+/* Mac-specific styles */
+.terminal-header.mac {
+    background-color: #E0E0E0;
+    color: #000000;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.mac .control.close { background-color: #FF5F57; }
+.terminal-header.mac .control.minimize { background-color: #FFBD2E; }
+.terminal-header.mac .control.maximize { background-color: #28C840; }
+
+/* Linux-specific styles */
+.terminal-header.linux {
+    background-color: #2D2D2D;
+    color: #ffffff;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.terminal-header.linux .control.close { background-color: #FF0000; }
+.terminal-header.linux .control.minimize { background-color: #FFA500; }
+.terminal-header.linux .control.maximize { background-color: #00FF00; }
+
+/* iOS-specific styles */
+.terminal-header.ios {
+    background-color: #000000;
+    color: #ffffff;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.ios .control.close { background-color: #FF0000; }
+.terminal-header.ios .control.minimize { background-color: #FFA500; }
+.terminal-header.ios .control.maximize { background-color: #00FF00; }
+
+/* Android-specific styles */
+.terminal-header.android {
+    background-color: #3DDC84;
+    color: #ffffff;
+    font-family: 'Roboto', sans-serif;
+}
+
+.terminal-header.android .control.close { background-color: #FF0000; }
+.terminal-header.android .control.minimize { background-color: #FFA500; }
+.terminal-header.android .control.maximize { background-color: #00FF00; }

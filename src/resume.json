@@ -1,0 +1,88 @@
+{
+    "name": "Aditya Narayan",
+    "location": "Bangalore, India",
+    "contact": {
+      "email": "an160264@gmail.com",
+      "phone": "9821292204",
+      "linkedin": "linkedin.com/in/aditya-narayan-atm98",
+      "github": "github.com/atm98"
+    },
+    "experience": [
+      {
+        "position": "Senior Software Engineer",
+        "company": "Amazecodes Solutions",
+        "location": "Bangalore",
+        "duration": "Feb 2020 – Present",
+        "responsibilities": [
+          "Developed and deployed 5 mobile apps for enterprise clients on Android and iOS",
+          "Developed an enterprise-level Applicant Tracking System, improving user efficiency by 30%",
+          "Built interactive web-based dashboards improving non-mobile user engagement by 85%",
+          "Implemented Python-based web frameworks reducing code review time by 20%",
+          "Designed and maintained a product configurator web application with 500,000 monthly users",
+          "Engineered a cloud-based attendance service using facial recognition and geofencing, reducing attendance errors by 40%"
+        ],
+        "technologies": [
+          "Java", "Kotlin", "Python", "Dart", "JavaScript", "TypeScript",
+          "React.js", "React-Native", "Angular", "JSON", "XML", "Swagger",
+          "Amazon Rekognition", "AWS Lambda", "AWS EC2", "AWS S3",
+          "MongoDB", "MySQL", "RealmDB", "DynamoDB", "Git", "SVN"
+        ]
+      },
+      {
+        "position": "Software Developer",
+        "company": "Coding Superstar",
+        "location": "Bangalore",
+        "duration": "July 2019 – Sept 2019",
+        "responsibilities": [
+          "Developed and deployed three major features for an Edu-Tech platform, increasing user satisfaction by 20%",
+          "Led a technical training program on DevOps and AWS for 100+ professionals, improving deployment efficiency by 30%"
+        ],
+        "technologies": ["Java", "Kotlin", "Python", "Bash", "Git"]
+      },
+      {
+        "position": "Android Application Development Intern",
+        "company": "Manch",
+        "location": "Bangalore",
+        "duration": "Feb 2019 – May 2019",
+        "responsibilities": [
+          "Designed and implemented key features for the Manch Social Media App, increasing monthly active users by 50%",
+          "Developed a CI/CD proof of concept reducing deployment time by 80%"
+        ],
+        "technologies": ["Java", "Kotlin", "CircleCI", "Jenkins", "Git"]
+      },
+      {
+        "position": "Android Application Development Intern",
+        "company": "HION Jobs",
+        "location": "Bangalore",
+        "duration": "June 2018 – Aug 2018",
+        "responsibilities": [
+          "Developed the HION Jobs Android app, surpassing 1,000 downloads",
+          "Mentored seven interns, increasing project contributions by 30%"
+        ],
+        "technologies": ["Java", "Firebase", "Git"]
+      },
+      {
+        "position": "Logistics",
+        "company": "VR|AR|MR",
+        "location": "Faridabad",
+        "duration": "Sept 2017 – Jan 2018",
+        "responsibilities": [
+          "Executed social media campaigns increasing group membership by 25%",
+          "Organized events, boosting attendance by 25%"
+        ]
+      }
+    ],
+    "skills": {
+      "languages": ["C++", "C", "Java", "SQL", "JavaScript", "TypeScript", "Python", "Kotlin", "Bash", "Dart"],
+      "technologies": ["Node.js", "Express.js", "React.js", "Angular", "React Native", "Flutter", "Android SDK", "MySQL", "MongoDB", "Firebase", "HTML5", "CSS3"],
+      "devops_ci_cd": ["Git", "GitHub", "Bitbucket", "Jenkins", "CircleCI", "CI/CD Pipelines", "SVN"],
+      "cloud_infrastructure": ["AWS EC2", "DynamoDB", "Rekognition", "S3", "Lambda"],
+      "software_development": ["JIRA", "Agile", "SDLC"]
+    },
+    "education": {
+      "institution": "Manav Rachna University",
+      "degree": "B.Tech in Computer Science and Technology",
+      "duration": "March 2015 – Dec 2019"
+    }
+}
+  

@@ -1,0 +1,183 @@
+.app-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  background-color: #2c2c2c;
+  font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+  overflow: hidden;
+}
+
+.terminal-section {
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px 6px 0 0;
+  font-size: 14px;
+  user-select: none;
+}
+
+.terminal-title {
+  font-weight: 500;
+}
+
+.terminal-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.control {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Windows-specific styles */
+.terminal-header.windows {
+  background-color: #0078D4;
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.terminal-header.windows .control.close { background-color: #FF0000; }
+.terminal-header.windows .control.minimize { background-color: #FFA500; }
+.terminal-header.windows .control.maximize { background-color: #00FF00; }
+
+/* Mac-specific styles */
+.terminal-header.mac {
+  background-color: #E0E0E0;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.mac .control.close { background-color: #FF5F57; }
+.terminal-header.mac .control.minimize { background-color: #FFBD2E; }
+.terminal-header.mac .control.maximize { background-color: #28C840; }
+
+/* Linux-specific styles */
+.terminal-header.linux {
+  background-color: #2D2D2D;
+  color: #ffffff;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.terminal-header.linux .control.close { background-color: #FF0000; }
+.terminal-header.linux .control.minimize { background-color: #FFA500; }
+.terminal-header.linux .control.maximize { background-color: #00FF00; }
+
+/* iOS-specific styles */
+.terminal-header.ios {
+  background-color: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.ios .control.close { background-color: #FF0000; }
+.terminal-header.ios .control.minimize { background-color: #FFA500; }
+.terminal-header.ios .control.maximize { background-color: #00FF00; }
+
+/* Android-specific styles */
+.terminal-header.android {
+  background-color: #3DDC84;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+}
+
+.terminal-header.android .control.close { background-color: #FF0000; }
+.terminal-header.android .control.minimize { background-color: #FFA500; }
+.terminal-header.android .control.maximize { background-color: #00FF00; }
+
+/* Enhanced Responsive Design */
+@media (max-width: 1024px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .terminal-section {
+    width: 100%;
+    height: 50vh;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .terminal-section {
+    height: 45vh;
+    min-height: 250px;
+  }
+
+  .terminal-header {
+    padding: 6px 10px;
+  }
+
+  .control {
+    width: 10px;
+    height: 10px;
+  }
+
+  .terminal-title {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .terminal-section {
+    height: 40vh;
+    min-height: 200px;
+  }
+
+  .terminal-header {
+    padding: 4px 8px;
+  }
+
+  .control {
+    width: 8px;
+    height: 8px;
+  }
+
+  .terminal-title {
+    font-size: 10px;
+  }
+}
+
+/* Handle landscape mode on mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .app-container {
+    flex-direction: row;
+  }
+
+  .terminal-section {
+    width: 50%;
+    height: 100vh;
+  }
+}
+
+/* Handle very small screens */
+@media (max-width: 320px) {
+  .terminal-section {
+    height: 35vh;
+    min-height: 180px;
+  }
+
+  .terminal-header {
+    padding: 3px 6px;
+  }
+
+  .control {
+    width: 6px;
+    height: 6px;
+  }
+
+  .terminal-title {
+    font-size: 8px;
+  }
+}

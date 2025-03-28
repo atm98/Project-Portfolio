@@ -1,0 +1,7 @@
+.ascii-art {
+    font-family: monospace;
+    white-space: pre;
+    color: lime;
+    background: black;
+    font-size: 12px;
+}
