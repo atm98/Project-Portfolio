@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from 'react';
 import './App.css';
 import Terminal from './Terminal';
@@ -9,32 +8,29 @@ import { ThemeToggle } from './components/ThemeToggle';
 import './styles/global.css';
 
 const getOS = () => {
-    const userAgent = window.navigator.userAgent;
-    if (userAgent.includes('Windows')) return 'windows';
-    if (userAgent.includes('Mac')) return 'mac';
-    if (userAgent.includes('Linux')) return 'linux';
-    if (userAgent.includes('Android')) return 'android';
-    if (userAgent.includes('iPhone') || userAgent.includes('iPad')) return 'ios';
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    if (userAgent.includes('win')) return 'windows';
+    if (userAgent.includes('mac')) return 'mac';
+    if (userAgent.includes('linux')) return 'linux';
+    if (userAgent.includes('iphone') || userAgent.includes('ipad')) return 'ios';
+    if (userAgent.includes('android')) return 'android';
     return 'unknown';
 };
 
 const App = () => {
-    const [os] = useState(getOS());
-    const [currentTheme] = useState<Theme>(themes.matrix);
-    const [activeSection, setActiveSection] = useState<string>('');
+    const [activeSection, setActiveSection] = useState('about');
+    const os = getOS();
+    const currentTheme = themes[os];
 
     const handleCommand = (command: string) => {
-        // Map terminal commands to portfolio sections
-        const commandToSection: { [key: string]: string } = {
-            'about': 'about',
-            'skills': 'skills',
-            'experience': 'experience',
-            'education': 'education',
-            'contact': 'contact'
-        };
-
-        if (commandToSection[command]) {
-            setActiveSection(commandToSection[command]);
+        const cmd = command.toLowerCase().trim();
+        if (cmd === 'about') setActiveSection('about');
+        else if (cmd === 'skills') setActiveSection('skills');
+        else if (cmd === 'projects') setActiveSection('projects');
+        else if (cmd === 'contact') setActiveSection('contact');
+        else if (cmd === 'clear') {
+            const terminal = document.querySelector('.terminal-output');
+            if (terminal) terminal.innerHTML = '';
         }
     };
 
