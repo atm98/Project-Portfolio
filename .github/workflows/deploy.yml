@@ -37,7 +37,7 @@ jobs:
           repository: atm98/atm98.github.io
           ref: master
           path: target
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DEPLOY_TOKEN }}
 
       - name: Copy build files
         run: |
@@ -47,10 +47,10 @@ jobs:
           git config --global user.email 'actions@github.com'
           git add .
           git commit -m "Deploy portfolio from Project-Portfolio"
-          git push
+          git push https://${{ secrets.DEPLOY_TOKEN }}@github.com/atm98/atm98.github.io.git master
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.DEPLOY_TOKEN }}
           publish_dir: ./target 
