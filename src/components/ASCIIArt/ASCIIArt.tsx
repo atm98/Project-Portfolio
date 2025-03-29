@@ -15,7 +15,7 @@ const ASCIIArt: React.FC<ASCIIArtProps> = ({ theme }) => {
             .then((res) => res.text())
             .then((fontData) => {
                 figlet.parseFont("Shaded Blocky", fontData); // Register the font
-                figlet.text("sudoRCE", { font: "Shaded Blocky", horizontalLayout: "full" }, (err, result) => {
+                figlet.text("sudoRCE", { font: "Shaded Blocky" as any }, (err, result) => {
                     if (!err) {
                         setAsciiText(result || "");
                     }

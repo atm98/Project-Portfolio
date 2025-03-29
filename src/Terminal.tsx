@@ -3,160 +3,36 @@ import resumeData from "./resume.json";
 import "./Terminal.css";
 import ASCIIArt from "./components/ASCIIArt/ASCIIArt";
 import { themes, Theme } from "./themes";
-
-interface FileSystemNode {
-    type: 'file' | 'directory';
-    name: string;
-    content?: string;
-    children?: { [key: string]: FileSystemNode };
-}
-
-interface FileSystem {
-    [key: string]: FileSystemNode;
-}
-
-const virtualFS: FileSystem = {
-    '/': {
-        type: 'directory',
-        name: '/',
-        children: {
-            'home': {
-                type: 'directory',
-                name: 'home',
-                children: {
-                    'user': {
-                        type: 'directory',
-                        name: 'user',
-                        children: {
-                            'Documents': {
-                                type: 'directory',
-                                name: 'Documents',
-                                children: {
-                                    'resume.pdf': {
-                                        type: 'file',
-                                        name: 'resume.pdf',
-                                        content: 'Resume file'
-                                    }
-                                }
-                            },
-                            'Projects': {
-                                type: 'directory',
-                                name: 'Projects',
-                                children: {
-                                    'portfolio': {
-                                        type: 'directory',
-                                        name: 'portfolio',
-                                        children: {}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-};
-
-const getOS = () => {
-    const userAgent = window.navigator.userAgent;
-    if (userAgent.includes('Windows')) return 'windows';
-    if (userAgent.includes('Mac')) return 'mac';
-    if (userAgent.includes('Linux')) return 'linux';
-    if (userAgent.includes('Android')) return 'android';
-    if (userAgent.includes('iPhone') || userAgent.includes('iPad')) return 'ios';
-    return 'unknown';
-};
-
-const getHeaderStyle = (os: string) => {
-    switch (os) {
-        case 'windows':
-            return {
-                backgroundColor: '#0078D4',
-                color: '#ffffff',
-                fontFamily: 'Segoe UI, sans-serif',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #0078D4'
-            };
-        case 'mac':
-            return {
-                backgroundColor: '#E0E0E0',
-                color: '#000000',
-                fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #E0E0E0'
-            };
-        case 'linux':
-            return {
-                backgroundColor: '#2D2D2D',
-                color: '#ffffff',
-                fontFamily: 'Ubuntu, sans-serif',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #2D2D2D'
-            };
-        case 'ios':
-            return {
-                backgroundColor: '#000000',
-                color: '#ffffff',
-                fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #000000'
-            };
-        case 'android':
-            return {
-                backgroundColor: '#3DDC84',
-                color: '#ffffff',
-                fontFamily: 'Roboto, sans-serif',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #3DDC84'
-            };
-        default:
-            return {
-                backgroundColor: '#2D2D2D',
-                color: '#ffffff',
-                fontFamily: 'monospace',
-                padding: '8px 12px',
-                borderRadius: '6px 6px 0 0',
-                borderBottom: '2px solid #2D2D2D'
-            };
-    }
-};
+import { virtualFS } from './fileSystem';
 
 interface TerminalProps {
     onCommand: (command: string) => void;
 }
 
+interface FileSystem {
+    [key: string]: {
+        type: 'file' | 'directory';
+        name: string;
+        content?: string;
+        children?: FileSystem;
+    };
+}
+
 const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
     const [history, setHistory] = useState<string[]>([]);
-    const [input, setInput] = useState("");
+    const [inputValue, setInputValue] = useState('');
     const [displayingText, setDisplayingText] = useState(false);
-    const [cursorVisible, setCursorVisible] = useState(true);
-    const [hostname, setHostname] = useState("localhost");
-    const [currentTheme, setCurrentTheme] = useState<Theme>(themes.matrix);
     const [commandHistory, setCommandHistory] = useState<string[]>([]);
     const [historyIndex, setHistoryIndex] = useState(-1);
     const terminalRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const [currentPath, setCurrentPath] = useState('/home/user');
-    const [fileSystem] = useState<FileSystem>(virtualFS);
-    const [os] = useState(getOS());
-    const headerStyle = getHeaderStyle(os);
+    const [fileSystem] = useState<FileSystem>(virtualFS['/'].children || {});
+    const [hostname, setHostname] = useState("localhost");
+    const [currentTheme, setCurrentTheme] = useState<Theme>(themes.matrix);
 
     useEffect(() => {
-        // Set the hostname when component mounts
         setHostname(window.location.hostname);
-    }, []);
-
-    useEffect(() => {
-        const cursorInterval = setInterval(() => {
-            setCursorVisible((prev) => !prev);
-        }, 500);
-        return () => clearInterval(cursorInterval);
     }, []);
 
     useEffect(() => {
@@ -174,53 +50,11 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
     const downloadResume = async () => {
         try {
             const response = await fetch('/resume.pdf');
-            const reader = response.body?.getReader();
-            const contentLength = +(response.headers.get('Content-Length') || 0);
-            let receivedLength = 0;
-            let lastUpdate = Date.now();
-            const chunks = [];
-
-            if (reader) {
-                while(true) {
-                    const {done, value} = await reader.read();
-                    if (done) break;
-                    
-                    chunks.push(value);
-                    receivedLength += value.length;
-                    
-                    // Calculate and show current speed
-                    const now = Date.now();
-                    const timeDiff = (now - lastUpdate) / 1000;
-                    const bytesPerSecond = value.length / timeDiff;
-                    const speed = bytesPerSecond > 1024 * 1024 
-                        ? `${(bytesPerSecond / (1024 * 1024)).toFixed(2)} MB/s`
-                        : `${(bytesPerSecond / 1024).toFixed(2)} KB/s`;
-                    
-                    setHistory(prev => {
-                        const newHistory = [...prev];
-                        const lastLine = newHistory[newHistory.length - 1];
-                        if (lastLine && lastLine.includes('Downloading file now')) {
-                            newHistory[newHistory.length - 1] = `Downloading file now... ${speed}`;
-                        } else {
-                            newHistory.push(`Downloading file now... ${speed}`);
-                        }
-                        return newHistory;
-                    });
-                    
-                    lastUpdate = now;
-                }
-
-                // Create and trigger download
-                const blob = new Blob(chunks, { type: 'application/pdf' });
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = 'Aditya_Narayan_Resume.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            const text = await response.text();
+            setHistory(prev => [...prev, text]);
         } catch (error) {
             console.error('Download failed:', error);
             setHistory(prev => [...prev, '\n❌ Download failed. Please try again.\n']);
@@ -346,17 +180,17 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             if (historyIndex < commandHistory.length - 1) {
                 const newIndex = historyIndex + 1;
                 setHistoryIndex(newIndex);
-                setInput(commandHistory[commandHistory.length - 1 - newIndex]);
+                setInputValue(commandHistory[commandHistory.length - 1 - newIndex]);
             }
         } else if (e.key === 'ArrowDown') {
             e.preventDefault();
             if (historyIndex > 0) {
                 const newIndex = historyIndex - 1;
                 setHistoryIndex(newIndex);
-                setInput(commandHistory[commandHistory.length - 1 - newIndex]);
+                setInputValue(commandHistory[commandHistory.length - 1 - newIndex]);
             } else {
                 setHistoryIndex(-1);
-                setInput('');
+                setInputValue('');
             }
         }
     };
@@ -383,13 +217,13 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (input.trim() && !displayingText) {
-            handleCommand(input.trim());
-            setInput("");
+        if (inputValue.trim() && !displayingText) {
+            handleCommand(inputValue.trim());
+            setInputValue('');
         }
     };
 
-    const getDirectoryFromPath = (path: string): FileSystemNode | null => {
+    const getDirectoryFromPath = (path: string): { type: 'file' | 'directory'; name: string; content?: string; children?: FileSystem } | null => {
         const pathParts = path.split('/').filter(Boolean);
         let current = fileSystem['/'];
         
@@ -430,8 +264,8 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
                             id="input"
                             ref={inputRef}
                             type="text"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
+                            value={inputValue}
+                            onChange={(e) => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
                             autoFocus
                             style={{

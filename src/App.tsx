@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 import Terminal from './Terminal';
 import Portfolio from './components/Portfolio/Portfolio';
@@ -15,14 +15,9 @@ const getOS = () => {
 };
 
 const App = () => {
-    const [hostname, setHostname] = useState("localhost");
     const [os] = useState(getOS());
-    const [currentTheme, setCurrentTheme] = useState<Theme>(themes.matrix);
+    const [currentTheme] = useState<Theme>(themes.matrix);
     const [activeSection, setActiveSection] = useState<string>('');
-
-    useEffect(() => {
-        setHostname(window.location.hostname);
-    }, []);
 
     const handleCommand = (command: string) => {
         // Map terminal commands to portfolio sections
