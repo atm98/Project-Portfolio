@@ -48,41 +48,45 @@ body {
 
 .app-container {
   width: 100%;
+  height: 100vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   flex: 1;
 }
 
 /* Terminal Section */
 .terminal-section {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 1rem;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--terminal-bg);
+  color: var(--terminal-text);
+  border-right: 1px solid var(--portfolio-border);
 }
 
 /* Portfolio Section */
 .portfolio-section {
-  width: 100%;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 1rem;
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background-color: var(--background);
+  color: var(--text);
+  border-left: 1px solid var(--portfolio-border);
 }
 
 /* Responsive Layout */
-@media (min-width: 768px) {
+@media (max-width: 768px) {
   .app-container {
-    flex-direction: row;
+    flex-direction: column;
   }
 
-  .terminal-section {
-    width: 50%;
-    max-width: 600px;
-  }
-
+  .terminal-section,
   .portfolio-section {
-    width: 50%;
-    max-width: 600px;
+    width: 100%;
+    height: 50vh;
   }
 }
 
@@ -93,6 +97,16 @@ body {
   --text: #212121;
   --textSecondary: #757575;
   --border: #E0E0E0;
+  --icon-color: #424242;
+  --terminal-text: #212121;
+  --terminal-bg: #FFFFFF;
+  --card-border: #E0E0E0;
+  --title-color: #1976D2;
+  --link-color: #1976D2;
+  --link-hover: #1565C0;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --portfolio-title: #1976D2;
+  --portfolio-border: #E0E0E0;
 }
 
 [data-theme='dark'] {
@@ -101,6 +115,16 @@ body {
   --text: #FFFFFF;
   --textSecondary: #B0BEC5;
   --border: #424242;
+  --icon-color: #FFFFFF;
+  --terminal-text: #FFFFFF;
+  --terminal-bg: #1E1E1E;
+  --card-border: #424242;
+  --title-color: #64B5F6;
+  --link-color: #64B5F6;
+  --link-hover: #90CAF9;
+  --card-shadow: rgba(0, 0, 0, 0.3);
+  --portfolio-title: #64B5F6;
+  --portfolio-border: #424242;
 }
 
 /* Common styles */
@@ -113,17 +137,18 @@ body {
 
 .card {
   background-color: var(--surface);
+  color: var(--text);
   border-radius: 8px;
   padding: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border: 1px solid var(--border);
+  box-shadow: 0 2px 4px var(--card-shadow);
+  border: 1px solid var(--portfolio-border);
   width: 100%;
   margin-bottom: 1rem;
 }
 
 .button {
   background-color: var(--primary);
-  color: white;
+  color: var(--text);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 4px;
@@ -142,8 +167,8 @@ body {
   position: fixed;
   top: 1rem;
   right: 1rem;
-  background: none;
-  border: none;
+  background: var(--surface);
+  border: 1px solid var(--card-border);
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
@@ -152,40 +177,39 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--surface);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px var(--card-shadow);
   z-index: 1000;
 }
 
 .theme-icon {
   font-size: 1.2rem;
-  color: var(--text);
+  color: var(--icon-color);
   transition: transform 0.3s ease-in-out;
 }
 
 .theme-icon.dark {
-  color: #FFD700;
+  color: var(--icon-color);
 }
 
 .theme-icon.light {
-  color: #4A4A4A;
+  color: var(--icon-color);
 }
 
 /* Utility classes */
 .text-primary {
-  color: var(--primary);
+  color: var(--title-color);
 }
 
 .text-secondary {
-  color: var(--secondary);
+  color: var(--textSecondary);
 }
 
 .bg-primary {
-  background-color: var(--primary);
+  background-color: var(--title-color);
 }
 
 .bg-secondary {
-  background-color: var(--secondary);
+  background-color: var(--textSecondary);
 }
 
 /* Smooth transitions */
@@ -212,4 +236,163 @@ body {
     top: 0.5rem;
     right: 0.5rem;
   }
+}
+
+/* Terminal Controls */
+.terminal-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.control {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Windows Terminal Controls */
+.terminal-header.windows .control.close {
+  background-color: #FF0000;
+}
+
+.terminal-header.windows .control.minimize {
+  background-color: #FFA500;
+}
+
+.terminal-header.windows .control.maximize {
+  background-color: #00FF00;
+}
+
+/* macOS Terminal Controls */
+.terminal-header.mac .control.close {
+  background-color: #FF5F57;
+}
+
+.terminal-header.mac .control.minimize {
+  background-color: #FFBD2E;
+}
+
+.terminal-header.mac .control.maximize {
+  background-color: #28C840;
+}
+
+/* Linux Terminal Controls */
+.terminal-header.linux .control.close {
+  background-color: #FF0000;
+}
+
+.terminal-header.linux .control.minimize {
+  background-color: #FFA500;
+}
+
+.terminal-header.linux .control.maximize {
+  background-color: #00FF00;
+}
+
+/* iOS Terminal Controls */
+.terminal-header.ios .control.close {
+  background-color: #FF0000;
+}
+
+.terminal-header.ios .control.minimize {
+  background-color: #FFA500;
+}
+
+.terminal-header.ios .control.maximize {
+  background-color: #00FF00;
+}
+
+/* Android Terminal Controls */
+.terminal-header.android .control.close {
+  background-color: #FF0000;
+}
+
+.terminal-header.android .control.minimize {
+  background-color: #FFA500;
+}
+
+.terminal-header.android .control.maximize {
+  background-color: #00FF00;
+}
+
+/* Terminal Header Styles */
+.terminal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px 6px 0 0;
+  font-size: 14px;
+  user-select: none;
+}
+
+.terminal-title {
+  font-weight: 500;
+  color: var(--terminal-text);
+}
+
+/* OS-specific header styles */
+.terminal-header.windows {
+  background-color: #2D2D2D;
+  color: #FFFFFF;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.terminal-header.mac {
+  background-color: #E0E0E0;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.linux {
+  background-color: #2D2D2D;
+  color: #FFFFFF;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.terminal-header.ios {
+  background-color: #000000;
+  color: #FFFFFF;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-header.android {
+  background-color: #3DDC84;
+  color: #FFFFFF;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Portfolio Title */
+.portfolio-title {
+  color: var(--portfolio-title);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  padding: 1rem;
+  border-bottom: 1px solid var(--portfolio-border);
+}
+
+/* Link styles */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* Icon styles */
+.icon {
+  color: var(--icon-color);
+}
+
+/* Section titles */
+.section-title {
+  color: var(--portfolio-title);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
 } 

@@ -2,12 +2,14 @@ import { useState } from 'react';
 import './App.css';
 import Terminal from './Terminal';
 import Portfolio from './components/Portfolio/Portfolio';
-import { themes, Theme } from './themes';
+import { themes } from './themes';
 import { ThemeProvider } from './context/ThemeContext';
 import { ThemeToggle } from './components/ThemeToggle';
 import './styles/global.css';
 
-const getOS = () => {
+type OS = 'windows' | 'mac' | 'linux' | 'ios' | 'android' | 'unknown';
+
+const getOS = (): OS => {
     const userAgent = window.navigator.userAgent.toLowerCase();
     if (userAgent.includes('win')) return 'windows';
     if (userAgent.includes('mac')) return 'mac';
@@ -20,7 +22,7 @@ const getOS = () => {
 const App = () => {
     const [activeSection, setActiveSection] = useState('about');
     const os = getOS();
-    const currentTheme = themes[os];
+    const currentTheme = themes[os] || themes.unknown;
 
     const handleCommand = (command: string) => {
         const cmd = command.toLowerCase().trim();
@@ -36,7 +38,7 @@ const App = () => {
 
     return (
         <ThemeProvider>
-            <div className="app">
+            <div className="app" style={{ backgroundColor: currentTheme.background }}>
                 <ThemeToggle />
                 <div className="app-container" style={{ backgroundColor: currentTheme.background }}>
                     <div className="terminal-section">

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import resumeData from "./resume.json";
 import "./Terminal.css";
 import ASCIIArt from "./components/ASCIIArt/ASCIIArt";
-import { themes, Theme } from "./themes";
+import { themes, TerminalTheme } from "./themes";
 import { virtualFS } from './fileSystem';
 
 interface TerminalProps {
@@ -29,10 +29,24 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
     const [currentPath, setCurrentPath] = useState('/home/user');
     const [fileSystem] = useState<FileSystem>(virtualFS['/'].children || {});
     const [hostname, setHostname] = useState("localhost");
-    const [currentTheme, setCurrentTheme] = useState<Theme>(themes.matrix);
+    const [currentTheme, setCurrentTheme] = useState<TerminalTheme>(themes.matrix);
+    const [completionIndex, setCompletionIndex] = useState(-1);
+    const [possibleCompletions, setPossibleCompletions] = useState<string[]>([]);
 
     useEffect(() => {
-        setHostname(window.location.hostname);
+        const host = window.location.hostname;
+        let cleanHostname = host;
+        
+        // Handle GitHub Pages URLs (username.github.io)
+        if (host.includes('github.io')) {
+            cleanHostname = host.split('.')[0];
+        }
+        // Handle custom domains (remove TLD)
+        else if (host.includes('.')) {
+            cleanHostname = host.split('.')[0];
+        }
+        
+        setHostname(cleanHostname);
     }, []);
 
     useEffect(() => {
@@ -53,11 +67,19 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const text = await response.text();
-            setHistory(prev => [...prev, text]);
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Aditya_Narayan_Resume.pdf';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            return "\n✅ Resume downloaded successfully!\n";
         } catch (error) {
             console.error('Download failed:', error);
-            setHistory(prev => [...prev, '\n❌ Download failed. Please try again.\n']);
+            return "\n❌ Download failed. Please try again.\n";
         }
     };
 
@@ -76,7 +98,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         return current;
     };
 
-    const commands: { [key: string]: (arg?: string) => string | void } = {
+    const commands: { [key: string]: (arg?: string) => string | void | Promise<string> } = {
         help: () => `\n📚 Available commands:\n   🔹 help - Show available commands\n   🔹 about - About me\n   🔹 skills - My technical skills\n   🔹 experience - Work history\n   🔹 education - Academic background\n   🔹 contact - Get in touch\n   🔹 projects - List my projects\n   🔹 resume - Download my resume (PDF)\n   🔹 theme - List available themes\n   🔹 theme <name> - Change theme\n   🔹 ls - List files\n   🔹 pwd - Show current directory\n   🔹 whoami - Show user info\n   🔹 clear - Clear terminal\n`,
         about: () => `\n👋 Hello! I'm ${resumeData.name}, a passionate ${resumeData.experience[0].position} based in ${resumeData.location}. ` +
             `With a strong foundation in ${resumeData.skills.languages.slice(0, 3).join(", ")}, I specialize in building robust and scalable applications. ` +
@@ -95,9 +117,8 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         experience: () => resumeData.experience.map(exp => `\n🔹 ${exp.position} at ${exp.company} (${exp.duration})\n   📍 ${exp.location}\n   📝 Responsibilities:\n   ${exp.responsibilities.map(resp => `     - ${resp}`).join("\n")}\n`).join(""),
         education: () => `\n🎓 ${resumeData.education.degree}\n   🏢 ${resumeData.education.institution}\n   🗓️ ${resumeData.education.duration}\n`,
         contact: () => formatLinks(`\n📧 Email: ${resumeData.contact.email}\n🔗 LinkedIn: ${resumeData.contact.linkedin}\n🐙 GitHub: ${resumeData.contact.github}\n📞 Phone: ${resumeData.contact.phone}\n`),
-        resume: () => {
-            downloadResume();
-            return ""; // Return empty string since we're handling the output in downloadResume
+        resume: async () => {
+            return await downloadResume();
         },
         theme: (themeName?: string) => {
             if (!themeName) {
@@ -174,8 +195,53 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         }, 20);
     };
 
+    const getPossibleCompletions = (input: string): string[] => {
+        const [command, ...args] = input.trim().split(' ');
+        
+        if (!args.length) {
+            return Object.keys(commands).filter(cmd => cmd.startsWith(command));
+        }
+        
+        const currentDir = getCurrentDirectory();
+        if (!currentDir) return [];
+        
+        const pathToComplete = args[args.length - 1];
+        const items = Object.values(currentDir.children || {});
+        
+        return items
+            .map(item => item.name)
+            .filter(name => name.startsWith(pathToComplete));
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'ArrowUp') {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            
+            const completions = getPossibleCompletions(inputValue);
+            if (completions.length === 0) return;
+            
+            if (completions.length > 1) {
+                const newIndex = (completionIndex + 1) % completions.length;
+                setCompletionIndex(newIndex);
+                
+                const [command, ...args] = inputValue.trim().split(' ');
+                const newValue = args.length > 0
+                    ? `${command} ${args.slice(0, -1).join(' ')} ${completions[newIndex]}`
+                    : completions[newIndex];
+                
+                setInputValue(newValue);
+                return;
+            }
+            
+            const [command, ...args] = inputValue.trim().split(' ');
+            const newValue = args.length > 0
+                ? `${command} ${args.slice(0, -1).join(' ')} ${completions[0]}`
+                : completions[0];
+            
+            setInputValue(newValue);
+            setCompletionIndex(-1);
+            setPossibleCompletions([]);
+        } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             if (historyIndex < commandHistory.length - 1) {
                 const newIndex = historyIndex + 1;
@@ -192,14 +258,16 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
                 setHistoryIndex(-1);
                 setInputValue('');
             }
+        } else if (e.key === 'Escape') {
+            setCompletionIndex(-1);
+            setPossibleCompletions([]);
         }
     };
 
-    const handleCommand = (cmd: string) => {
+    const handleCommand = async (cmd: string) => {
         const [command, ...args] = cmd.trim().split(' ');
         setHistory((prev) => [...prev, `$ ${cmd}`]);
         
-        // Add command to history if it's not empty and not the same as the last command
         if (cmd.trim() && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== cmd.trim())) {
             setCommandHistory(prev => [...prev, cmd.trim()]);
         }
@@ -208,7 +276,7 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             commands[command]();
             return;
         }
-        const response = commands[command] ? commands[command](args[0]) : `\n❌ Command not found: ${command}\n`;
+        const response = commands[command] ? await commands[command](args[0]) : `\n❌ Command not found: ${command}\n`;
         if (response) {
             typeText(response, () => { });
         }
@@ -217,9 +285,12 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (inputValue.trim() && !displayingText) {
-            handleCommand(inputValue.trim());
+        if (inputValue.trim()) {
+            handleCommand(inputValue);
             setInputValue('');
+            setHistoryIndex(-1);
+            setCompletionIndex(-1);
+            setPossibleCompletions([]);
         }
     };
 

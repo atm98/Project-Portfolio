@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import figlet from "figlet";
 import './ASCIIArt.css';
-import { Theme } from "../../themes";
+import { TerminalTheme } from "../../themes";
 
 interface ASCIIArtProps {
-    theme?: Theme;
+    theme?: TerminalTheme;
 }
 
 const ASCIIArt: React.FC<ASCIIArtProps> = ({ theme }) => {

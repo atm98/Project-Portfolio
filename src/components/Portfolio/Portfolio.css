@@ -1,8 +1,8 @@
 .portfolio-container {
     width: 50%;
     height: 100vh;
-    background-color: #1a1a1a;
-    color: #ffffff;
+    background-color: var(--background);
+    color: var(--text);
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -20,14 +20,14 @@
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 3px solid #00ff00;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.2);
+    border: 3px solid var(--title-color);
+    box-shadow: 0 0 20px rgba(var(--title-color), 0.2);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .profile-image:hover {
     transform: scale(1.05);
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.3);
+    box-shadow: 0 0 30px rgba(var(--title-color), 0.3);
 }
 
 /* Add a subtle glow effect */
@@ -39,7 +39,7 @@
     right: -5px;
     bottom: -5px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, rgba(0,255,0,0) 70%);
+    background: radial-gradient(circle, rgba(var(--title-color), 0.1) 0%, rgba(var(--title-color), 0) 70%);
     z-index: -1;
     animation: glow 2s infinite;
 }
@@ -61,14 +61,14 @@
 
 .portfolio-header {
     padding: 1rem;
-    border-bottom: 1px solid #333;
-    background-color: #2a2a2a;
+    border-bottom: 1px solid var(--border);
+    background-color: var(--surface);
 }
 
 .portfolio-header h2 {
     margin: 0;
     font-size: 1.5rem;
-    color: #00ff00;
+    color: var(--title-color);
 }
 
 .cards-container {
@@ -81,20 +81,21 @@
 }
 
 .card {
-    background-color: #2a2a2a;
+    background-color: var(--surface);
     border-radius: 8px;
     padding: 1.5rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--card-shadow);
     transition: transform 0.2s ease-in-out;
+    border: 1px solid var(--border);
 }
 
 .card.active {
     transform: scale(1.02);
-    border: 2px solid #00ff00;
+    border: 2px solid var(--title-color);
 }
 
 .card-title {
-    color: #00ff00;
+    color: var(--title-color);
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.5rem;
@@ -102,6 +103,7 @@
 
 .card-content {
     line-height: 1.6;
+    color: var(--text);
 }
 
 .skill-tags {
@@ -112,8 +114,8 @@
 }
 
 .skill-tag {
-    background-color: #333;
-    color: #00ff00;
+    background-color: var(--surface);
+    color: var(--title-color);
     padding: 0.25rem 0.75rem;
     border-radius: 15px;
     font-size: 0.9rem;
@@ -121,11 +123,12 @@
     overflow: hidden;
     transition: all 0.3s ease;
     cursor: pointer;
+    border: 1px solid var(--border);
 }
 
 .skill-tag:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 255, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(var(--title-color), 0.2);
 }
 
 .skill-tag::before {
@@ -135,7 +138,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, rgba(0,255,0,0.2) 0%, rgba(0,255,0,0) 70%);
+    background: radial-gradient(circle, rgba(var(--title-color), 0.2) 0%, rgba(var(--title-color), 0) 70%);
     transform: scale(0);
     opacity: 0;
     transition: transform 0.5s ease-out, opacity 0.5s ease-out;
@@ -153,7 +156,7 @@
     left: 50%;
     width: 5px;
     height: 5px;
-    background: rgba(0, 255, 0, 0.5);
+    background: rgba(var(--title-color), 0.5);
     border-radius: 50%;
     transform: scale(0);
     opacity: 0;
@@ -166,18 +169,18 @@
 }
 
 .skill-tag:hover {
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
+    text-shadow: 0 0 8px rgba(var(--title-color), 0.5);
 }
 
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.4);
+        box-shadow: 0 0 0 0 rgba(var(--title-color), 0.4);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(0, 255, 0, 0);
+        box-shadow: 0 0 0 10px rgba(var(--title-color), 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(0, 255, 0, 0);
+        box-shadow: 0 0 0 0 rgba(var(--title-color), 0);
     }
 }
 
@@ -188,7 +191,7 @@
 .experience-item {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border);
 }
 
 .experience-item:last-child {
@@ -197,162 +200,159 @@
 }
 
 .experience-item h3 {
-    color: #00ff00;
-    margin-bottom: 0.5rem;
+    color: var(--title-color);
 }
 
-.company {
-    color: #888;
-    margin-bottom: 0.5rem;
+.experience-item .company {
+    color: var(--text);
     font-weight: 500;
 }
 
-.location {
-    color: #888;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
+.experience-item .location {
+    color: var(--textSecondary);
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 0.5rem 0;
 }
 
 .location-icon {
-    color: #00ff00;
-    font-size: 1rem;
+    color: var(--textSecondary);
 }
 
 .experience-item ul {
-    margin: 0;
-    padding-left: 1.5rem;
-    list-style-type: none;
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
 }
 
 .experience-item li {
+    color: var(--text);
     margin-bottom: 0.5rem;
-    color: #ddd;
+    padding-left: 1rem;
     position: relative;
 }
 
 .experience-item li::before {
     content: '•';
-    color: #00ff00;
+    color: var(--title-color);
     position: absolute;
-    left: -1rem;
+    left: 0;
 }
 
 .technologies {
     margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid #333;
 }
 
 .technologies h4 {
-    color: #00ff00;
+    color: var(--title-color);
     margin-bottom: 0.5rem;
-    font-size: 1rem;
 }
 
 .contact-item {
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: var(--surface);
+    border-radius: 8px;
+    transition: transform 0.2s ease-in-out;
+    border: 1px solid var(--border);
 }
 
 .contact-item:hover {
-    background-color: #333;
-    transform: translateX(5px);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--card-shadow);
 }
 
 .contact-icon {
-    margin-right: 1rem;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    border-radius: 50%;
+    background-color: var(--surface);
+    color: var(--title-color);
 }
 
 .contact-icon svg {
-    font-size: 1.2rem;
-    color: #00ff00;
-    transition: transform 0.2s ease;
+    width: 24px;
+    height: 24px;
+    transition: transform 0.3s ease;
 }
 
 .contact-item:hover .contact-icon svg {
-    transform: scale(1.2);
+    transform: scale(1.1);
 }
 
 .contact-link {
-    color: #00ff00;
+    color: var(--text);
     text-decoration: none;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    transition: color 0.3s ease;
 }
 
 .contact-link:hover {
-    color: #00cc00;
-    text-shadow: 0 0 8px rgba(0, 255, 0, 0.3);
+    color: var(--title-color);
 }
 
+/* Scrollbar styles */
 .cards-container::-webkit-scrollbar {
     width: 8px;
 }
 
 .cards-container::-webkit-scrollbar-track {
-    background: #1a1a1a;
+    background: var(--surface);
 }
 
 .cards-container::-webkit-scrollbar-thumb {
-    background: #333;
+    background: var(--border);
     border-radius: 4px;
 }
 
 .cards-container::-webkit-scrollbar-thumb:hover {
-    background: #444;
+    background: var(--textSecondary);
 }
 
+/* Education styles */
 .education-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    margin-bottom: 0.5rem;
-    color: #ddd;
+    margin-bottom: 1rem;
+    color: var(--text);
 }
 
 .education-icon {
-    color: #00ff00;
-    font-size: 1.1rem;
+    color: var(--title-color);
     width: 20px;
+    text-align: center;
 }
 
+/* Greeting styles */
 .greeting {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     margin-bottom: 1rem;
 }
 
 .greeting-icon {
-    color: #00ff00;
-    font-size: 1.2rem;
+    color: var(--title-color);
     animation: wave 2s infinite;
 }
 
 @keyframes wave {
-    0%, 100% {
-        transform: rotate(0deg);
-    }
-    25% {
-        transform: rotate(-20deg);
-    }
-    75% {
-        transform: rotate(20deg);
-    }
+    0% { transform: rotate(0deg); }
+    20% { transform: rotate(20deg); }
+    40% { transform: rotate(-20deg); }
+    60% { transform: rotate(20deg); }
+    80% { transform: rotate(-20deg); }
+    100% { transform: rotate(0deg); }
 }
 
-/* Responsive adjustments */
+/* Responsive styles */
 @media (max-width: 768px) {
     .profile-image {
         width: 120px;

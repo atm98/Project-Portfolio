@@ -1,4 +1,4 @@
-export interface Theme {
+export interface TerminalTheme {
     name: string;
     background: string;
     foreground: string;
@@ -12,7 +12,7 @@ export interface Theme {
     cursor: string;
 }
 
-export const themes: { [key: string]: Theme } = {
+export const themes: { [key: string]: TerminalTheme } = {
     'matrix': {
         name: 'Matrix',
         background: '#000000',
@@ -77,5 +77,18 @@ export const themes: { [key: string]: Theme } = {
         },
         selection: '#3e3d32',
         cursor: '#f8f8f2'
+    },
+    'unknown': {
+        name: 'Default',
+        background: '#1e1e1e',
+        foreground: '#ffffff',
+        prompt: '#00ff00',
+        header: {
+            background: '#2d2d2d',
+            foreground: '#ffffff',
+            border: '#404040'
+        },
+        selection: '#404040',
+        cursor: '#ffffff'
     }
 }; 
