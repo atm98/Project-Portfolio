@@ -63,6 +63,20 @@ Project-Portfolio/
 └── node_modules/  # Dependencies
 ```
 
+## 🚀 Deployment
+
+This project is automatically deployed to GitHub Pages using GitHub Actions. The deployment process:
+
+1. Triggers on push to the `development` branch
+2. Builds the project using `npm run build`
+3. Deploys the built files to [atm98.github.io](https://atm98.github.io)
+
+To deploy manually:
+1. Push your changes to the `development` branch
+2. Go to the Actions tab in your repository
+3. Select the "Deploy to GitHub Pages" workflow
+4. Click "Run workflow"
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.

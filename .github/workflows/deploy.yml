@@ -1,0 +1,57 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ "development" ]  # Trigger on push to development branch
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write  # Required for pushing to the target repository
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+        with:
+          path: source
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: source
+
+      - name: Build project
+        run: npm run build
+        working-directory: source
+
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          repository: atm98/atm98.github.io
+          ref: master
+          path: target
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy build files
+        run: |
+          cp -r source/dist/* target/
+          cd target
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add .
+          git commit -m "Deploy portfolio from Project-Portfolio"
+          git push
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./target 
