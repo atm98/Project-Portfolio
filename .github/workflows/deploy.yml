@@ -23,14 +23,13 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: source/package-lock.json
 
       - name: Install dependencies
-        run: npm install
-        working-directory: source
-
-      - name: Build project
-        run: npm run build
-        working-directory: source
+        run: |
+          cd source
+          npm install
+          npm run build
 
       - name: Checkout target repository
         uses: actions/checkout@v4
