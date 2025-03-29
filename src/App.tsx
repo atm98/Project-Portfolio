@@ -1,8 +1,12 @@
+import React from 'react';
 import { useState } from 'react';
 import './App.css';
 import Terminal from './Terminal';
 import Portfolio from './components/Portfolio/Portfolio';
 import { themes, Theme } from './themes';
+import { ThemeProvider } from './context/ThemeContext';
+import { ThemeToggle } from './components/ThemeToggle';
+import './styles/global.css';
 
 const getOS = () => {
     const userAgent = window.navigator.userAgent;
@@ -35,30 +39,35 @@ const App = () => {
     };
 
     return (
-        <div className="app-container" style={{ backgroundColor: currentTheme.background }}>
-            <div className="terminal-section">
-                <div className={`terminal-header ${os}`} style={{
-                    backgroundColor: currentTheme.header.background,
-                    borderBottom: `1px solid ${currentTheme.header.border}`
-                }}>
-                    <div className="terminal-title" style={{ color: currentTheme.header.foreground }}>
-                        {os === 'windows' && 'Windows Terminal'}
-                        {os === 'mac' && 'Terminal.app'}
-                        {os === 'linux' && 'Linux Terminal'}
-                        {os === 'ios' && 'iOS Terminal'}
-                        {os === 'android' && 'Android Terminal'}
-                        {os === 'unknown' && 'Terminal'}
+        <ThemeProvider>
+            <div className="app">
+                <ThemeToggle />
+                <div className="app-container" style={{ backgroundColor: currentTheme.background }}>
+                    <div className="terminal-section">
+                        <div className={`terminal-header ${os}`} style={{
+                            backgroundColor: currentTheme.header.background,
+                            borderBottom: `1px solid ${currentTheme.header.border}`
+                        }}>
+                            <div className="terminal-title" style={{ color: currentTheme.header.foreground }}>
+                                {os === 'windows' && 'Windows Terminal'}
+                                {os === 'mac' && 'Terminal.app'}
+                                {os === 'linux' && 'Linux Terminal'}
+                                {os === 'ios' && 'iOS Terminal'}
+                                {os === 'android' && 'Android Terminal'}
+                                {os === 'unknown' && 'Terminal'}
+                            </div>
+                            <div className="terminal-controls">
+                                <span className="control close"></span>
+                                <span className="control minimize"></span>
+                                <span className="control maximize"></span>
+                            </div>
+                        </div>
+                        <Terminal onCommand={handleCommand} />
                     </div>
-                    <div className="terminal-controls">
-                        <span className="control close"></span>
-                        <span className="control minimize"></span>
-                        <span className="control maximize"></span>
-                    </div>
+                    <Portfolio activeSection={activeSection} />
                 </div>
-                <Terminal onCommand={handleCommand} />
             </div>
-            <Portfolio activeSection={activeSection} />
-        </div>
+        </ThemeProvider>
     );
 };
 
