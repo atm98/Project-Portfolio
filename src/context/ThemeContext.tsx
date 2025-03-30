@@ -11,24 +11,44 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isDark, setIsDark] = useState(() => {
+    // Check if user has manually set a preference
     const savedTheme = localStorage.getItem('theme');
-    return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    // If no manual preference, use system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
   const theme = isDark ? darkTheme : lightTheme;
 
   useEffect(() => {
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      // Only update if user hasn't manually set a preference
+      if (!localStorage.getItem('theme')) {
+        setIsDark(e.matches);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+
+    // Apply theme
     document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
-    
-    // Apply theme colors to CSS variables
     Object.entries(theme.colors).forEach(([key, value]) => {
       document.documentElement.style.setProperty(`--${key}`, value);
     });
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange);
+    };
   }, [isDark, theme]);
 
   const toggleTheme = () => {
     setIsDark(!isDark);
+    // Save user preference when manually toggled
+    localStorage.setItem('theme', !isDark ? 'dark' : 'light');
   };
 
   return (

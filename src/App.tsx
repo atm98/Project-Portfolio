@@ -4,7 +4,7 @@ import Terminal from './Terminal';
 import Portfolio from './components/Portfolio/Portfolio';
 import { themes } from './themes';
 import { ThemeProvider } from './context/ThemeContext';
-import { ThemeToggle } from './components/ThemeToggle';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 import './styles/global.css';
 
 type OS = 'windows' | 'mac' | 'linux' | 'ios' | 'android' | 'unknown';
@@ -23,23 +23,57 @@ const App = () => {
     const [activeSection, setActiveSection] = useState('about');
     const os = getOS();
     const currentTheme = themes[os] || themes.unknown;
+    const { trackEvent } = useGoogleAnalytics();
 
     const handleCommand = (command: string) => {
         const cmd = command.toLowerCase().trim();
-        if (cmd === 'about') setActiveSection('about');
-        else if (cmd === 'skills') setActiveSection('skills');
-        else if (cmd === 'projects') setActiveSection('projects');
-        else if (cmd === 'contact') setActiveSection('contact');
-        else if (cmd === 'clear') {
-            const terminal = document.querySelector('.terminal-output');
-            if (terminal) terminal.innerHTML = '';
+        switch (cmd) {
+            case 'about':
+                setActiveSection('about');
+                trackEvent('section_view', { section: 'about' });
+                break;
+            case 'skills':
+                setActiveSection('skills');
+                trackEvent('section_view', { section: 'skills' });
+                break;
+            case 'experience':
+                setActiveSection('experience');
+                trackEvent('section_view', { section: 'experience' });
+                break;
+            case 'education':
+                setActiveSection('education');
+                trackEvent('section_view', { section: 'education' });
+                break;
+            case 'contact':
+                setActiveSection('contact');
+                trackEvent('section_view', { section: 'contact' });
+                break;
+            case 'projects':
+                setActiveSection('projects');
+                trackEvent('section_view', { section: 'projects' });
+                break;
+            case 'clear':
+                const terminal = document.querySelector('.terminal-output');
+                if (terminal) terminal.innerHTML = '';
+                break;
+            case 'help':
+            case 'theme':
+            case 'ls':
+            case 'pwd':
+            case 'whoami':
+            case 'cd':
+            case 'resume':
+                // These commands don't need to scroll to any section
+                break;
+            default:
+                // Unknown command - no section change needed
+                break;
         }
     };
 
     return (
         <ThemeProvider>
             <div className="app" style={{ backgroundColor: currentTheme.background }}>
-                <ThemeToggle />
                 <div className="app-container" style={{ backgroundColor: currentTheme.background }}>
                     <div className="terminal-section">
                         <div className={`terminal-header ${os}`} style={{

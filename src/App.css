@@ -112,12 +112,21 @@
     height: 50vh;
     min-height: 300px;
   }
+
+  .portfolio-container {
+    width: 100%;
+    height: 50vh;
+  }
 }
 
 @media (max-width: 768px) {
   .terminal-section {
     height: 45vh;
     min-height: 250px;
+  }
+
+  .portfolio-container {
+    height: 55vh;
   }
 
   .terminal-header {
@@ -164,6 +173,11 @@
     width: 50%;
     height: 100vh;
   }
+
+  .portfolio-container {
+    width: 50%;
+    height: 100vh;
+  }
 }
 
 /* Handle very small screens */
@@ -171,6 +185,10 @@
   .terminal-section {
     height: 35vh;
     min-height: 180px;
+  }
+
+  .portfolio-container {
+    height: 65vh;
   }
 
   .terminal-header {

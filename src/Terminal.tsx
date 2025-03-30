@@ -4,6 +4,7 @@ import "./Terminal.css";
 import ASCIIArt from "./components/ASCIIArt/ASCIIArt";
 import { themes, TerminalTheme } from "./themes";
 import { virtualFS } from './fileSystem';
+import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
 
 interface TerminalProps {
     onCommand: (command: string) => void;
@@ -31,7 +32,8 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
     const [hostname, setHostname] = useState("localhost");
     const [currentTheme, setCurrentTheme] = useState<TerminalTheme>(themes.matrix);
     const [completionIndex, setCompletionIndex] = useState(-1);
-    const [possibleCompletions, setPossibleCompletions] = useState<string[]>([]);
+    const [currentTypingInterval, setCurrentTypingInterval] = useState<NodeJS.Timeout | null>(null);
+    const { trackEvent } = useGoogleAnalytics();
 
     useEffect(() => {
         const host = window.location.hostname;
@@ -154,6 +156,9 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         whoami: () => `\n${resumeData.name}\n`,
         clear: () => {
             setHistory([]);
+            setCommandHistory([]);
+            setHistoryIndex(-1);
+            return "";
         },
         cd: (path?: string) => {
             if (!path) {
@@ -177,6 +182,14 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         }
     };
 
+    const stopTyping = () => {
+        if (currentTypingInterval) {
+            clearInterval(currentTypingInterval);
+            setCurrentTypingInterval(null);
+            setDisplayingText(false);
+        }
+    };
+
     const typeText = (text: string, callback: () => void) => {
         let i = 0;
         setDisplayingText(true);
@@ -190,9 +203,11 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             if (i === text.length) {
                 clearInterval(interval);
                 setDisplayingText(false);
+                setCurrentTypingInterval(null);
                 callback();
             }
         }, 20);
+        setCurrentTypingInterval(interval);
     };
 
     const getPossibleCompletions = (input: string): string[] => {
@@ -214,6 +229,14 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        // Handle Ctrl+C
+        if (e.ctrlKey && e.key === 'c') {
+            e.preventDefault();
+            stopTyping();
+            setInputValue('');
+            return;
+        }
+
         if (e.key === 'Tab') {
             e.preventDefault();
             
@@ -240,7 +263,6 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             
             setInputValue(newValue);
             setCompletionIndex(-1);
-            setPossibleCompletions([]);
         } else if (e.key === 'ArrowUp') {
             e.preventDefault();
             if (historyIndex < commandHistory.length - 1) {
@@ -260,18 +282,24 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             }
         } else if (e.key === 'Escape') {
             setCompletionIndex(-1);
-            setPossibleCompletions([]);
         }
     };
 
     const handleCommand = async (cmd: string) => {
         const [command, ...args] = cmd.trim().split(' ');
-        setHistory((prev) => [...prev, `$ ${cmd}`]);
+        setHistory((prev) => [...prev, `portfolio@${hostname}:${currentPath}$ ${cmd}`]);
         
         if (cmd.trim() && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== cmd.trim())) {
             setCommandHistory(prev => [...prev, cmd.trim()]);
         }
         
+        // Track command usage
+        trackEvent('command_executed', {
+            command_name: command,
+            arguments: args.join(' '),
+            current_path: currentPath
+        });
+
         if (command === "clear") {
             commands[command]();
             return;
@@ -290,7 +318,6 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
             setInputValue('');
             setHistoryIndex(-1);
             setCompletionIndex(-1);
-            setPossibleCompletions([]);
         }
     };
 

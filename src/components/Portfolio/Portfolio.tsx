@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGithub, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { faEnvelope, faPhone, faMapMarkerAlt, faUniversity, faCalendarAlt, faHandSparkles } from '@fortawesome/free-solid-svg-icons';
 import resumeData from '../../resume.json';
+import { ThemeToggle } from '../ThemeToggle';
 import './Portfolio.css';
 
 interface PortfolioProps {
@@ -170,6 +171,7 @@ const Portfolio: React.FC<PortfolioProps> = ({ activeSection }) => {
         <div className="portfolio-container">
             <div className="portfolio-header">
                 <h2>Portfolio</h2>
+                <ThemeToggle />
             </div>
             <div className="cards-container" ref={cardsRef}>
                 {cards.map(card => (
