@@ -5,6 +5,7 @@ import ASCIIArt from "./components/ASCIIArt/ASCIIArt";
 import { themes, TerminalTheme } from "./themes";
 import { virtualFS } from './fileSystem';
 import { useGoogleAnalytics } from './hooks/useGoogleAnalytics';
+import xss from 'xss';
 
 interface TerminalProps {
     onCommand: (command: string) => void;
@@ -285,7 +286,8 @@ const Terminal: React.FC<TerminalProps> = ({ onCommand }) => {
         }
     };
 
-    const handleCommand = async (cmd: string) => {
+    const handleCommand = async (cmd_unsafe: string) => {
+        const cmd = xss(cmd_unsafe);
         const [command, ...args] = cmd.trim().split(' ');
         setHistory((prev) => [...prev, `portfolio@${hostname}:${currentPath}$ ${cmd}`]);
         
